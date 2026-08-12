@@ -1,0 +1,8 @@
+# Namespaces to export/manage AlertmanagerConfigs for — one per line.
+# Blank lines and lines starting with # are ignored.
+#
+# Keep one file per cluster and pass it with -f, e.g.:
+#   cp namespaces.example namespaces.prod   # then edit
+#   ./export.sh <kubeconfig> -f namespaces.prod
+graylog
+sentry

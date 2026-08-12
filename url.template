@@ -1,0 +1,1 @@
+http://webhook-matrix-webhook-nginx.matrix-webhook.svc.cluster.local/?key=${KEY}&room_id=${ROOM_ID}&formatter=alertmanager&cluster=${CLUSTER}
