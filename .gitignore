@@ -1,0 +1,5 @@
+secrets/*.env
+secrets/*/*.env
+!secrets/example.env
+namespaces.*
+!namespaces.example
