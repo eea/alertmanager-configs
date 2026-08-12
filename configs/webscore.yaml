@@ -1,0 +1,59 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  annotations: {}
+  labels:
+    managed-by: alertmanager-configs
+  name: alerts-webscore
+  namespace: webscore
+spec:
+  receivers:
+    - name: 'null'
+    - name: matrix-high
+      webhookConfigs:
+        - sendResolved: true
+          urlSecret:
+            key: url
+            name: matrix-webhook-url
+  route:
+    groupBy: []
+    groupInterval: 10m
+    groupWait: 1m
+    matchers: []
+    receiver: 'null'
+    repeatInterval: 4h
+    routes:
+      - continue: false
+        matchers:
+          - name: alertname
+            value: InfoInhibitor
+        receiver: 'null'
+      - continue: false
+        matchers:
+          - name: alertname
+            value: KubePersistentVolumeFillingUp
+        receiver: 'null'
+      - continue: false
+        matchers:
+          - name: severity
+            value: info
+        receiver: 'null'
+      - continue: false
+        groupBy:
+          - alertname
+          - namespace
+          - pod
+        matchers:
+          - name: severity
+            value: critical
+        receiver: matrix-high
+        repeatInterval: 1h
+      - continue: false
+        groupBy:
+          - alertname
+          - namespace
+        matchers:
+          - name: severity
+            value: warning
+        receiver: matrix-high
+        repeatInterval: 8h
