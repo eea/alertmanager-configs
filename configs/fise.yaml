@@ -1,0 +1,61 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alerts-fise
+  namespace: fise
+  labels:
+    managed-by: alertmanager-configs
+spec:
+  receivers:
+    - name: "null"
+    - name: matrix-high
+      webhookConfigs:
+        - sendResolved: true
+          urlSecret:
+            name: matrix-webhook-url
+            key: url
+  route:
+    groupInterval: 10m
+    groupWait: 1m
+    receiver: "null"
+    repeatInterval: 4h
+    routes:
+      - continue: false
+        matchers:
+          - name: alertname
+            value: InfoInhibitor
+        receiver: "null"
+      - continue: false
+        matchers:
+          - name: severity
+            value: info
+        receiver: "null"
+      - continue: false
+        groupBy:
+          - alertname
+          - namespace
+          - pod
+        matchers:
+          - name: severity
+            value: critical
+        receiver: matrix-high
+        repeatInterval: 1h
+      - continue: false
+        groupBy:
+          - alertname
+          - namespace
+          - job_name
+        matchers:
+          - name: alertname
+            value: KubeJobFailed
+        receiver: matrix-high
+        repeatInterval: 8760h
+      - continue: false
+        groupBy:
+          - alertname
+          - namespace
+        matchers:
+          - name: severity
+            value: warning
+        receiver: matrix-high
+        repeatInterval: 8h
